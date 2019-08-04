@@ -13,18 +13,22 @@ Edit_field *create_edit_field(Vec font_size,
                               Color font_color);
 void destroy_edit_field(Edit_field *edit_field);
 
-int edit_field_render(const Edit_field *edit_field,
-                      Camera *camera,
-                      Point screen_position);
+int edit_field_render_screen(const Edit_field *edit_field,
+                             Camera *camera,
+                             Point screen_position);
 
-int edit_field_keyboard(Edit_field *edit_field,
-                        const SDL_KeyboardEvent *event);
-int edit_field_text_input(Edit_field *edit_field,
-                          const SDL_TextInputEvent *text_input);
+int edit_field_render_world(const Edit_field *edit_field,
+                            Camera *camera,
+                            Point world_position);
+
+int edit_field_event(Edit_field *edit_field, const SDL_Event *event);
 
 const char *edit_field_as_text(const Edit_field *edit_field);
 
 void edit_field_replace(Edit_field *edit_field, const char *text);
 void edit_field_clean(Edit_field *edit_field);
+void edit_field_restyle(Edit_field *edit_field,
+                        Vec font_size,
+                        Color font_color);
 
 #endif  // EDIT_FIELD_H_

@@ -48,7 +48,6 @@ struct Console
     char *eval_result;
 };
 
-/* TODO(#355): Console does not support Emacs keybindings */
 /* TODO(#356): Console does not support autocompletion */
 /* TODO(#357): Console does not show the state of the GC of the script */
 /* TODO(#358): Console does not support copy, cut, paste operations */
@@ -197,24 +196,35 @@ int console_handle_event(Console *console,
             history_prev(console->history);
             return 0;
 
+        case SDLK_p: {
+            if (event->key.keysym.mod & KMOD_CTRL) {
+                edit_field_replace(
+                    console->edit_field, history_current(console->history));
+                history_prev(console->history);
+                return 0;
+            }
+        } break;
+
         case SDLK_DOWN:
             edit_field_replace(
                 console->edit_field,
                 history_current(console->history));
             history_next(console->history);
             return 0;
+
+        case SDLK_n: {
+            if (event->key.keysym.mod & KMOD_CTRL) {
+                edit_field_replace(
+                    console->edit_field, history_current(console->history));
+                history_next(console->history);
+                return 0;
+            }
+        } break;
         }
-
-        return edit_field_keyboard(console->edit_field, &event->key);
     } break;
-
-    case SDL_TEXTINPUT:
-        return edit_field_text_input(console->edit_field, &event->text);
-
-    default: {}
     }
 
-    return 0;
+    return edit_field_event(console->edit_field, event);
 }
 
 int console_render(const Console *console,
@@ -237,14 +247,14 @@ int console_render(const Console *console,
     }
 
     if (console_log_render(console->console_log,
-                   renderer,
-                   vec(0.0f, y)) < 0) {
+                           renderer,
+                           vec(0.0f, y)) < 0) {
         return -1;
     }
 
-    if (edit_field_render(console->edit_field,
-                          camera,
-                          vec(0.0f, y + CONSOLE_LOG_HEIGHT)) < 0) {
+    if (edit_field_render_screen(console->edit_field,
+                                 camera,
+                                 vec(0.0f, y + CONSOLE_LOG_HEIGHT)) < 0) {
         return -1;
     }
 

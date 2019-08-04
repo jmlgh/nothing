@@ -299,6 +299,8 @@ int game_update(Game *game, float delta_time)
                 game->camera) < 0) {
             return -1;
         }
+
+        level_editor_update(game->level_editor, delta_time);
     } break;
 
     case GAME_STATE_PAUSE:
@@ -343,7 +345,12 @@ static int game_event_running(Game *game, const SDL_Event *event)
     case SDL_KEYDOWN: {
         switch (event->key.keysym.sym) {
         case SDLK_r: {
-            const char *level_filename = level_picker_selected_level(game->level_picker);
+            const char *level_filename = game->level_editor->file_name;
+
+            if (!level_filename) {
+                log_warn("Could not reload the level. There is no associated file.\n");
+                return 0;
+            }
 
             log_info("Reloading the level from '%s'...\n", level_filename);
 
@@ -474,7 +481,7 @@ static int game_event_level_picker(Game *game, const SDL_Event *event)
     } break;
     }
 
-    return level_picker_event(game->level_picker, event);
+    return level_picker_event(game->level_picker, event, game->camera);
 }
 
 static int game_event_level_editor(Game *game, const SDL_Event *event)

@@ -28,6 +28,11 @@ int camera_draw_rect_screen(Camera *camera,
                             Rect rect,
                             Color color);
 
+int camera_draw_thicc_rect_screen(Camera *camera,
+                                  Rect rect,
+                                  Color color,
+                                  float thiccness);
+
 int camera_draw_triangle(Camera *camera,
                          Triangle t,
                          Color color);
@@ -47,6 +52,11 @@ int camera_render_text_screen(Camera *camera,
                               Vec size,
                               Color color,
                               Vec position);
+
+Rect camera_text_boundary_box(const Camera *camera,
+                              Vec position,
+                              Vec scale,
+                              const char *text);
 
 int camera_render_debug_text(Camera *camera,
                              const char *text,
@@ -78,9 +88,12 @@ Vec camera_map_screen(const Camera *camera,
                       Sint32 x, Sint32 y);
 
 Vec camera_point(const Camera *camera, const Vec p);
+Rect camera_rect(const Camera *camera, const Rect rect);
 
 int camera_fill_rect_screen(Camera *camera,
                             Rect rect,
                             Color color);
+
+const Sprite_font *camera_font(const Camera *camera);
 
 #endif  // CAMERA_H_

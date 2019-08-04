@@ -3,6 +3,7 @@
 
 #include "game/level/level_editor/layer.h"
 #include "game/level/level_editor/layer_picker.h"
+#include "ui/wiggly_text.h"
 
 typedef struct LevelMetadata LevelMetadata;
 typedef struct LevelEditor LevelEditor;
@@ -12,7 +13,7 @@ typedef struct LabelLayer LabelLayer;
 typedef struct Edit_field Edit_field;
 
 typedef enum {
-    LEVEL_EDITOR_EDITING = 0,
+    LEVEL_EDITOR_IDLE = 0,
     LEVEL_EDITOR_SAVEAS
 } LevelEditorState;
 
@@ -24,13 +25,14 @@ struct LevelEditor
     float camera_scale;
     Edit_field *edit_field_filename;
     LayerPicker layer_picker;
+    FadingWigglyText notice;
 
     LevelMetadata *metadata;
     RectLayer *boxes_layer;
     RectLayer *platforms_layer;
     RectLayer *back_platforms_layer;
     PointLayer *goals_layer;
-    PlayerLayer *player_layer;
+    PlayerLayer player_layer;
     RectLayer *lava_layer;
     RectLayer *regions_layer;
     ColorPicker background_layer;
@@ -52,8 +54,9 @@ int level_editor_render(const LevelEditor *level_editor,
                         Camera *camera);
 int level_editor_event(LevelEditor *level_editor,
                        const SDL_Event *event,
-                       const Camera *camera);
+                       Camera *camera);
 int level_editor_focus_camera(LevelEditor *level_editor,
                               Camera *camera);
+int level_editor_update(LevelEditor *level_editor, float delta_time);
 
 #endif  // LEVEL_EDITOR_H_

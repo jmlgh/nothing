@@ -23,12 +23,32 @@ typedef struct Line {
     Point p2;
 } Line;
 
+Rect horizontal_thicc_line(float x1, float x2, float y, float thiccness);
+Rect vertical_thicc_line(float y1, float y2, float x, float thiccness);
+
 Rect rect(float x, float y, float w, float h);
 Rect rect_from_vecs(Point position, Vec size);
 Rect rect_from_points(Point p1, Point p2);
 Rect rect_from_sdl(const SDL_Rect *rect);
 
 Rect rects_overlap_area(Rect rect1, Rect rect2);
+
+static inline
+Rect rect_boundary2(Rect rect1, Rect rect2)
+{
+    return rect_from_points(
+        vec(
+            fminf(rect1.x, rect2.x),
+            fminf(rect1.y, rect2.y)),
+        vec(
+            fmaxf(rect1.x + rect1.w, rect2.x + rect2.w),
+            fmaxf(rect1.y + rect1.h, rect2.y + rect2.h)));
+}
+
+static inline Point rect_position(Rect rect)
+{
+    return vec(rect.x, rect.y);
+}
 
 static inline Rect rect_scale(Rect rect, float d)
 {
